@@ -18,18 +18,18 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Generate Gradle Wrapper
-        run: |
-          mkdir -p gradle/wrapper
-          cd gradle/wrapper
-          curl -sLO "https://github.com/gradle/gradle/raw/v8.2.0/gradle/wrapper/gradle-wrapper.jar"
-          curl -sLO "https://github.com/gradle/gradle/raw/v8.2.0/gradle/wrapper/gradle-wrapper.properties"
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
       - name: Grant execute permission
         run: chmod +x gradlew
 
       - name: Build APK
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Debug - check build output
+        if: failure()
+        run: find . -name "*.apk" -o -name "*.txt" -o -name "*.log" | head -20 && ls -la app/build/outputs/ 2>/dev/null || echo "无构建输出目录"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
