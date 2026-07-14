@@ -25,18 +25,15 @@ jobs:
         run: gradle wrapper --no-daemon
 
       - name: Build APK
-        run: ./gradlew assembleRelease --no-daemon 2>&1 | tee /tmp/build.log
+        run: ./gradlew assembleDebug --no-daemon
 
-      - name: Show error log
-        if: failure()
-        run: |
-          echo "=== 构建完整日志 ==="
-          cat /tmp/build.log 2>/dev/null || echo "无日志文件"
-          echo "=== 目录结构 ==="
-          find . -not -path './.git/*' -type f | head -30
+      - name: Find APK
+        run: find . -name "*.apk" -ls
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: helloapp-release
-          path: app/build/outputs/apk/release/*.apk
+          name: helloapp-debug
+          path: |
+            **/*.apk
+          if-no-files-found: error
