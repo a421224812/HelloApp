@@ -25,7 +25,7 @@ jobs:
         run: gradle wrapper --no-daemon
 
       - name: Build APK
-        run: ./gradlew assembleDebug --no-daemon
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Find APK
         run: find . -name "*.apk" -ls
@@ -34,6 +34,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: helloapp-debug
-          path: |
-            **/*.apk
+          path: "**/*.apk"
           if-no-files-found: error
